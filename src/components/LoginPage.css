@@ -1,0 +1,146 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  padding: 0;
+  box-shadow: none;
+}
+
+.login-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  width: 380px;
+  padding: 1.8rem;
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+  transition: box-shadow 0.3s ease;
+}
+
+.login-card:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-card h1 {
+  margin: 0 0 1rem;
+  color: #333;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.login-logo {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #6a11cb;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  position: relative;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+  color: #555;
+  font-size: 0.85rem;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-container:focus-within {
+  border-color: #6a11cb;
+  box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.15);
+}
+
+.form-input {
+  border: none;
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  transition: background-color 0.3s;
+}
+
+.form-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 0.8rem;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.8rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.login-btn:active {
+  transform: translateY(0);
+}
+
+.error-message {
+  color: #dc3545;
+  margin-top: 0.7rem;
+  font-size: 0.85rem;
+}
+
+.restaurant-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.login-hint {
+  margin-top: 1rem;
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    width: 90%;
+    padding: 1.5rem;
+  }
+  
+  .restaurant-title {
+    font-size: 2rem;
+  }
+}
