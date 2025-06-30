@@ -1,31 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUtensils, FaUser, FaLock } from "react-icons/fa";
 import "./LoginPage.css";
+import { apiFetch } from "../utils/api";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loginAttempt, setLoginAttempt] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const tryLogin = async () => {
+      if (!loginAttempt) return;
+      if (password !== "khuljasimsim") {
+        setError("Invalid password");
+        setLoginAttempt(false);
+        return;
+      }
+      setLoading(true);
+      try {
+        const response = await apiFetch(
+          `/api/isEmailRegistered?email=${encodeURIComponent(username)}`
+        );
+        if (
+          response &&
+          response.status === 200 &&
+          response.is_registered === true &&
+          response.success === true
+        ) {
+          setError("");
+          navigate("/dashboard");
+        } else {
+          setError("User doesn't exist");
+        }
+      } catch (err) {
+        setError("Error checking user registration");
+      }
+      setLoading(false);
+      setLoginAttempt(false);
+    };
+    tryLogin();
+  }, [loginAttempt]);
+
   const handleLogin = () => {
-    if (username === "testuser" && password === "password") {
-      setError("");
-      navigate("/dashboard");
-    } else {
-      setError("Invalid username or password");
-    }
+    setLoginAttempt(true);
   };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      handleLogin();
+      setLoginAttempt(true);
     }
   };
 
   return (
     <div className="login-container">
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+          <div>Loading...</div>
+        </div>
+      )}
       <h1 className="restaurant-title">nana.s Tea</h1>
       <div className="login-card">
         <div className="login-logo">
@@ -66,7 +103,9 @@ const LoginPage = () => {
         <button className="login-btn" onClick={handleLogin}>
           Login
         </button>
-        <p className="login-hint">(Hint: Use "testuser" / "password")</p>
+        <p className="login-hint">
+          (Hint: Use your email & password: khuljasimsim)
+        </p>
       </div>
     </div>
   );
