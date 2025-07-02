@@ -32,7 +32,11 @@ const LoginPage = () => {
           response.success === true
         ) {
           setError("");
-          navigate("/dashboard");
+          if (response.user_type === "SuperAdmin") {
+            navigate("/superadmin");
+          } else {
+            navigate("/dashboard");
+          }
         } else {
           setError("User doesn't exist");
         }
