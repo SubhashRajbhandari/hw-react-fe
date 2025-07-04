@@ -1,0 +1,42 @@
+.superadmin-panel {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+.superadmin-panel h2 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.restaurant-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.restaurant-form input,
+.restaurant-form textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+.restaurant-form button {
+  padding: 10px;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+}
+.success-message {
+  color: green;
+  margin-top: 10px;
+}
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
