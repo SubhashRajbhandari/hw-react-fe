@@ -4,6 +4,7 @@ import LoginPage from "./components/LoginPage";
 import DashboardPage from "./components/DashboardPage";
 import MenuPage from "./components/MenuPage";
 import SuperAdminPanel from "./components/SuperAdminPanel";
+import RestaurantPanel from "./components/RestaurantPanel";
 import "./App.css";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/superadmin" element={<SuperAdminPanel />} />
+        <Route path="/restaurant" element={<RestaurantPanel />} />
       </Routes>
     </Router>
   );

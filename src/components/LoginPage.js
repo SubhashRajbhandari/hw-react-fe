@@ -34,6 +34,8 @@ const LoginPage = () => {
           setError("");
           if (response.user_type === "SuperAdmin") {
             navigate("/superadmin");
+          } else if (response.user_type === "Restaurant") {
+            navigate("/restaurant");
           } else {
             navigate("/dashboard");
           }

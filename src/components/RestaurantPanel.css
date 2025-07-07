@@ -1,0 +1,73 @@
+.restaurant-panel {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+.restaurant-panel h2 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.menu-item-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.menu-item-form input,
+.menu-item-form textarea,
+.menu-item-form select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+.menu-item-form button {
+  padding: 10px;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+}
+.menu-item-form input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+.success-message {
+  color: green;
+  margin-top: 10px;
+}
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.loading-spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

@@ -16,7 +16,8 @@
   gap: 12px;
 }
 .restaurant-form input,
-.restaurant-form textarea {
+.restaurant-form textarea,
+.restaurant-form select {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -31,6 +32,10 @@
   font-size: 1rem;
   cursor: pointer;
   margin-top: 10px;
+}
+.restaurant-form select:focus {
+  border-color: #3498db;
+  outline: none;
 }
 .success-message {
   color: green;
