@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "./SuperAdminPanel.css";
 import { apiFetch } from "../utils/api";
 import Header from "./Header";
+import Sidebar from "./Sidebar";
+import { FaUsers, FaStore, FaUtensils } from "react-icons/fa";
 
 const SuperAdminPanel = () => {
   const [form, setForm] = useState({
@@ -19,13 +21,14 @@ const SuperAdminPanel = () => {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showRestaurantForm, setShowRestaurantForm] = useState(true);
+  const [activeForm, setActiveForm] = useState(""); // No form shown initially
   const [userForm, setUserForm] = useState({
     email: "",
     user_type: "",
     name: "",
     phone_number: "",
   });
+  const [activeSection, setActiveSection] = useState("dashboard");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -96,138 +99,168 @@ const SuperAdminPanel = () => {
     window.location.href = "/";
   };
 
+  // Update form toggling to use sidebar navigation
+  React.useEffect(() => {
+    if (activeSection === "restaurant" || activeSection === "user") {
+      setActiveForm(activeSection);
+    } else {
+      setActiveForm("");
+    }
+  }, [activeSection]);
+
   return (
     <div>
       <Header onLogout={handleLogout} userType="SuperAdmin" />
-      <div className="superadmin-panel">
-        <h2>Super Admin Panel</h2>
-        <div style={{ marginBottom: 20 }}>
-          <button
-            className={showRestaurantForm ? "active-btn" : ""}
-            onClick={() => setShowRestaurantForm(true)}
-            style={{ marginRight: 10 }}
-          >
-            Add Restaurant
-          </button>
-          <button
-            className={!showRestaurantForm ? "active-btn" : ""}
-            onClick={() => setShowRestaurantForm(false)}
-          >
-            Add User
-          </button>
+      <div style={{ display: "flex", minHeight: "100vh" }}>
+        <Sidebar
+          onLogout={handleLogout}
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+        />
+        <div className="superadmin-main">
+          <h2>Super Admin Panel</h2>
+          {/* Dashboard summary cards */}
+          {activeSection === "dashboard" && (
+            <div className="dashboard-cards">
+              <div className="dashboard-card">
+                <FaUsers className="dashboard-icon" />
+                <div className="dashboard-card-title">Total Users</div>
+                <div className="dashboard-card-value">123</div>
+              </div>
+              <div className="dashboard-card">
+                <FaStore className="dashboard-icon" />
+                <div className="dashboard-card-title">Restaurants</div>
+                <div className="dashboard-card-value">12</div>
+              </div>
+              <div className="dashboard-card">
+                <FaUtensils className="dashboard-icon" />
+                <div className="dashboard-card-title">Menu Items</div>
+                <div className="dashboard-card-value">56</div>
+              </div>
+            </div>
+          )}
+          {/* Form toggles removed, handled by sidebar */}
+          {activeForm === "restaurant" && (
+            <form className="restaurant-form" onSubmit={handleSubmit}>
+              <input
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Restaurant Name"
+                required
+              />
+              <input
+                name="address"
+                value={form.address}
+                onChange={handleChange}
+                placeholder="Address"
+                required
+              />
+              <input
+                name="latitude"
+                value={form.latitude}
+                onChange={handleChange}
+                placeholder="Latitude"
+                required
+                type="number"
+                step="any"
+              />
+              <input
+                name="longitude"
+                value={form.longitude}
+                onChange={handleChange}
+                placeholder="Longitude"
+                required
+                type="number"
+                step="any"
+              />
+              <input
+                name="phone_number"
+                value={form.phone_number}
+                onChange={handleChange}
+                placeholder="Phone Number"
+                required
+              />
+              <input
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="Email"
+              />
+              <textarea
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                placeholder="Description"
+              />
+              <input
+                name="logo_url"
+                value={form.logo_url}
+                onChange={handleChange}
+                placeholder="Logo URL"
+              />
+              <textarea
+                name="opening_hours"
+                value={form.opening_hours}
+                onChange={handleChange}
+                placeholder="Opening Hours (JSON format)"
+                required
+              />
+              <button type="submit">Add Restaurant</button>
+            </form>
+          )}
+          {activeForm === "user" && (
+            <form className="user-form" onSubmit={handleUserSubmit}>
+              <input
+                name="email"
+                value={userForm.email}
+                onChange={handleUserChange}
+                placeholder="Email"
+                required
+              />
+              <select
+                name="user_type"
+                value={userForm.user_type}
+                onChange={handleUserChange}
+                required
+              >
+                <option value="">Select User Type</option>
+                <option value="RegularUser">RegularUser</option>
+                <option value="Restaurant">Restaurant</option>
+                <option value="SuperAdmin">SuperAdmin</option>
+              </select>
+              <input
+                name="name"
+                value={userForm.name}
+                onChange={handleUserChange}
+                placeholder="Name"
+                required
+              />
+              <input
+                name="phone_number"
+                value={userForm.phone_number}
+                onChange={handleUserChange}
+                placeholder="Phone Number"
+              />
+              <button type="submit">Add User</button>
+            </form>
+          )}
+          {/* Welcome/empty state */}
+          {activeSection === "dashboard" && !activeForm && (
+            <div className="welcome-message">
+              Welcome to the Super Admin Dashboard! Select an option from the
+              sidebar to get started.
+            </div>
+          )}
+          {success && <div className="success-message">{success}</div>}
+          {error && <div className="error-message">{error}</div>}
+          {loading && (
+            <div className="loading-overlay">
+              <div className="loading-spinner"></div>
+              <div>Submitting...</div>
+            </div>
+          )}
         </div>
-        {showRestaurantForm ? (
-          <form className="restaurant-form" onSubmit={handleSubmit}>
-            <input
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              placeholder="Restaurant Name"
-              required
-            />
-            <input
-              name="address"
-              value={form.address}
-              onChange={handleChange}
-              placeholder="Address"
-              required
-            />
-            <input
-              name="latitude"
-              value={form.latitude}
-              onChange={handleChange}
-              placeholder="Latitude"
-              required
-              type="number"
-              step="any"
-            />
-            <input
-              name="longitude"
-              value={form.longitude}
-              onChange={handleChange}
-              placeholder="Longitude"
-              required
-              type="number"
-              step="any"
-            />
-            <input
-              name="phone_number"
-              value={form.phone_number}
-              onChange={handleChange}
-              placeholder="Phone Number"
-              required
-            />
-            <input
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="Email"
-            />
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              placeholder="Description"
-            />
-            <input
-              name="logo_url"
-              value={form.logo_url}
-              onChange={handleChange}
-              placeholder="Logo URL"
-            />
-            <textarea
-              name="opening_hours"
-              value={form.opening_hours}
-              onChange={handleChange}
-              placeholder="Opening Hours (JSON format)"
-              required
-            />
-            <button type="submit">Add Restaurant</button>
-          </form>
-        ) : (
-          <form className="user-form" onSubmit={handleUserSubmit}>
-            <input
-              name="email"
-              value={userForm.email}
-              onChange={handleUserChange}
-              placeholder="Email"
-              required
-            />
-            <select
-              name="user_type"
-              value={userForm.user_type}
-              onChange={handleUserChange}
-              required
-            >
-              <option value="">Select User Type</option>
-              <option value="RegularUser">RegularUser</option>
-              <option value="Restaurant">Restaurant</option>
-              <option value="SuperAdmin">SuperAdmin</option>
-            </select>
-            <input
-              name="name"
-              value={userForm.name}
-              onChange={handleUserChange}
-              placeholder="Name"
-              required
-            />
-            <input
-              name="phone_number"
-              value={userForm.phone_number}
-              onChange={handleUserChange}
-              placeholder="Phone Number"
-            />
-            <button type="submit">Add User</button>
-          </form>
-        )}
-        {success && <div className="success-message">{success}</div>}
-        {error && <div className="error-message">{error}</div>}
-        {loading && (
-          <div className="loading-overlay">
-            <div className="loading-spinner"></div>
-            <div>Submitting...</div>
-          </div>
-        )}
       </div>
     </div>
   );
