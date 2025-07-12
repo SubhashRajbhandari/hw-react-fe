@@ -26,7 +26,7 @@
   align-items: center;
   font-size: 1.1rem;
   transition: background 0.2s, color 0.2s;
-  color: #232946; /* black/dark text for better contrast */
+  color: #232946; /* black/dark text for visibility */
 }
 .sidebar-nav li svg {
   margin-right: 12px;

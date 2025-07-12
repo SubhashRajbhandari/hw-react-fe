@@ -29,6 +29,10 @@ const SuperAdminPanel = () => {
     phone_number: "",
   });
   const [activeSection, setActiveSection] = useState("dashboard");
+  const [showRestaurantsList, setShowRestaurantsList] = useState(false);
+  const [restaurantUsers, setRestaurantUsers] = useState([]);
+  const [restaurantUsersLoading, setRestaurantUsersLoading] = useState(false);
+  const [restaurantUsersError, setRestaurantUsersError] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -99,6 +103,32 @@ const SuperAdminPanel = () => {
     window.location.href = "/";
   };
 
+  const handleRestaurantsCardClick = () => {
+    setShowRestaurantsList(true);
+    setRestaurantUsersLoading(true);
+    setRestaurantUsersError("");
+    apiFetch("/api/getAllUsers")
+      .then((response) => {
+        if (response && response.success && Array.isArray(response.users)) {
+          const filtered = response.users.filter(
+            (u) => u.user_type === "Restaurant"
+          );
+          setRestaurantUsers(filtered);
+        } else {
+          setRestaurantUsersError("Failed to fetch users.");
+        }
+        setRestaurantUsersLoading(false);
+      })
+      .catch(() => {
+        setRestaurantUsersError("Error fetching users.");
+        setRestaurantUsersLoading(false);
+      });
+  };
+
+  const handleBackToDashboard = () => {
+    setShowRestaurantsList(false);
+  };
+
   // Update form toggling to use sidebar navigation
   React.useEffect(() => {
     if (activeSection === "restaurant" || activeSection === "user") {
@@ -120,14 +150,18 @@ const SuperAdminPanel = () => {
         <div className="superadmin-main">
           <h2>Super Admin Panel</h2>
           {/* Dashboard summary cards */}
-          {activeSection === "dashboard" && (
+          {activeSection === "dashboard" && !showRestaurantsList && (
             <div className="dashboard-cards">
               <div className="dashboard-card">
                 <FaUsers className="dashboard-icon" />
                 <div className="dashboard-card-title">Total Users</div>
                 <div className="dashboard-card-value">123</div>
               </div>
-              <div className="dashboard-card">
+              <div
+                className="dashboard-card"
+                style={{ cursor: "pointer" }}
+                onClick={handleRestaurantsCardClick}
+              >
                 <FaStore className="dashboard-icon" />
                 <div className="dashboard-card-title">Restaurants</div>
                 <div className="dashboard-card-value">12</div>
@@ -137,6 +171,57 @@ const SuperAdminPanel = () => {
                 <div className="dashboard-card-title">Menu Items</div>
                 <div className="dashboard-card-value">56</div>
               </div>
+            </div>
+          )}
+          {activeSection === "dashboard" && showRestaurantsList && (
+            <div style={{ marginBottom: 32 }}>
+              <button
+                onClick={handleBackToDashboard}
+                style={{ marginBottom: 16 }}
+              >
+                Back to Dashboard
+              </button>
+              <h3>Restaurant Users</h3>
+              {restaurantUsersLoading ? (
+                <div>Loading...</div>
+              ) : restaurantUsersError ? (
+                <div className="error-message">{restaurantUsersError}</div>
+              ) : restaurantUsers.length === 0 ? (
+                <div>No restaurant users found.</div>
+              ) : (
+                <table
+                  style={{
+                    width: "100%",
+                    background: "#fff",
+                    borderRadius: 8,
+                    boxShadow: "0 2px 8px rgba(35,41,70,0.06)",
+                    marginTop: 12,
+                  }}
+                >
+                  <thead>
+                    <tr style={{ background: "#f4f6fb" }}>
+                      <th style={{ padding: "10px 8px", textAlign: "left" }}>
+                        Name
+                      </th>
+                      <th style={{ padding: "10px 8px", textAlign: "left" }}>
+                        Email
+                      </th>
+                      <th style={{ padding: "10px 8px", textAlign: "left" }}>
+                        Phone
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {restaurantUsers.map((u) => (
+                      <tr key={u.user_id}>
+                        <td style={{ padding: "8px" }}>{u.name}</td>
+                        <td style={{ padding: "8px" }}>{u.email}</td>
+                        <td style={{ padding: "8px" }}>{u.phone_number}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           )}
           {/* Form toggles removed, handled by sidebar */}
