@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaUtensils, FaUser, FaLock } from "react-icons/fa";
 import "./LoginPage.css";
 import { apiFetch } from "../utils/api";
+import Cookies from "js-cookie";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -32,6 +33,7 @@ const LoginPage = () => {
           response.success === true
         ) {
           setError("");
+          Cookies.set("email", username, { expires: 1 });
           if (response.user_type === "SuperAdmin") {
             navigate("/superadmin");
           } else if (response.user_type === "Restaurant") {
