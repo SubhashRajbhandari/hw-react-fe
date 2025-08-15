@@ -18,7 +18,6 @@ const RestaurantPanel = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState("addMenu");
-  const [email, setEmail] = useState("");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -27,49 +26,6 @@ const RestaurantPanel = () => {
       [name]: type === "checkbox" ? checked : value,
     });
   };
-
-  useEffect(() => {
-    const loggedInEmail = Cookies.get("email");
-    if (loggedInEmail) {
-      setEmail(loggedInEmail);
-    }
-  }, []);
-
-  useEffect(() => {
-    const fetchSessionData = async () => {
-      try {
-        // Retrieve email from cookies or local storage
-        const email = Cookies.get("email"); // Assuming email is stored in cookies during login
-
-        // if (!email) {
-        //   console.error("Email is not available for fetching session data");
-        //   return;
-        // }
-
-        const response = await apiFetch("/api/getSessionData", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }), // Include email in the payload
-        });
-
-        if (response && response.success) {
-          const user_id = response.data.user_id;
-          const restaurant_id = response.data.restaurant_id;
-          const menu_id = response.data.menu_id;
-          // Store in cookies
-          Cookies.set("user_id", user_id, { expires: 1 });
-          Cookies.set("restaurant_id", restaurant_id, { expires: 1 });
-          Cookies.set("menu_id", menu_id, { expires: 1 });
-          // } else {
-          //   console.error("Failed to fetch session data");
-        }
-      } catch (error) {
-        console.error("Error fetching session data:", error);
-      }
-    };
-
-    fetchSessionData();
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,7 +36,7 @@ const RestaurantPanel = () => {
       const response = await apiFetch("/api/addMenu-items", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, email }),
+        body: JSON.stringify({ ...form, user_id: Cookies.get("user_id") }),
       });
       if (response && response.success) {
         setSuccess("Menu item added successfully!");
@@ -117,7 +73,9 @@ const RestaurantPanel = () => {
         }}
       >
         <h2>Restaurant Panel</h2>
-        <div style={{ marginRight: "20px", fontWeight: "bold" }}>{email}</div>
+        <div style={{ marginRight: "20px", fontWeight: "bold" }}>
+          hatai ma waiter
+        </div>
       </div>
       <div style={{ display: "flex" }}>
         <Sidebar

@@ -44,7 +44,7 @@ const SuperAdminPanel = () => {
     setError("");
     setLoading(true);
     try {
-      const response = await apiFetch("/api/addRestausrant", {
+      const response = await apiFetch("/api/addRestaurant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -304,14 +304,16 @@ const SuperAdminPanel = () => {
                 required
               />
               <select
+                id="user_type_select"
                 name="user_type"
                 value={userForm.user_type}
                 onChange={handleUserChange}
                 required
               >
-                <option value="">Select User Type</option>
+                <option value="" disabled>
+                  User Type
+                </option>
                 <option value="RegularUser">RegularUser</option>
-                <option value="Restaurant">Restaurant</option>
                 <option value="SuperAdmin">SuperAdmin</option>
               </select>
               <input

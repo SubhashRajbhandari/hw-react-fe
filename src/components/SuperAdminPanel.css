@@ -1,94 +1,230 @@
-.superadmin-panel {
-  max-width: 500px;
+:root{
+  --bg: #f4f8ff;
+  --card: #ffffff;
+  --accent: #5b8def;
+  --accent-2: #6ad7b7;
+  --muted: #6b7280;
+  --radius: 12px;
+}
+
+.superadmin-panel{
+  max-width: 900px;
   margin: 40px auto;
   padding: 32px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 30px rgba(19,24,44,0.06);
 }
-.superadmin-panel h2 {
+.superadmin-panel h2{
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
+  color: #172554;
 }
-.restaurant-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.restaurant-form input,
-.restaurant-form textarea,
-.restaurant-form select {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
-}
-.restaurant-form button {
-  padding: 10px;
-  background: #3498db;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 10px;
-}
-.restaurant-form select:focus {
-  border-color: #3498db;
-  outline: none;
-}
-.success-message {
-  color: green;
-  margin-top: 10px;
-}
-.error-message {
-  color: red;
-  margin-top: 10px;
-}
-.superadmin-main {
+
+.superadmin-main{
   flex: 1;
-  padding: 40px 48px;
-  background: #f4f6fb;
+  padding: 32px 48px;
+  background: linear-gradient(180deg, #f7fbff 0%, var(--bg) 100%);
   min-height: 100vh;
 }
-.dashboard-cards {
+
+.dashboard-cards{
   display: flex;
-  gap: 32px;
-  margin-bottom: 36px;
+  gap: 24px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
 }
-.dashboard-card {
-  background: #fff;
+
+.dashboard-card{
+  background: var(--card);
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(35,41,70,0.08);
-  padding: 32px 36px 24px 36px;
-  min-width: 220px;
+  box-shadow: 0 8px 24px rgba(35,41,70,0.06);
+  padding: 22px 24px;
+  min-width: 210px;
+  flex: 1 1 220px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  position: relative;
+  transition: transform 180ms ease, box-shadow 180ms ease;
 }
-.dashboard-icon {
-  font-size: 2.2rem;
-  color: #232946;
+.dashboard-card:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(35,41,70,0.12);
+}
+.dashboard-icon{
+  font-size: 2rem;
+  color: var(--accent);
   margin-bottom: 12px;
 }
-.dashboard-card-title {
-  font-size: 1.1rem;
-  color: #393e6e;
+.dashboard-card-title{
+  font-size: 1rem;
+  color: #263253;
   margin-bottom: 6px;
 }
-.dashboard-card-value {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #232946;
+.dashboard-card-value{
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #0f1724;
 }
-.welcome-message {
-  margin-top: 48px;
-  font-size: 1.3rem;
-  color: #393e6e;
-  background: #fff;
-  padding: 32px 36px;
+
+.welcome-message{
+  margin-top: 28px;
+  font-size: 1.125rem;
+  color: #263253;
+  background: var(--card);
+  padding: 26px;
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(35,41,70,0.06);
+  box-shadow: 0 8px 20px rgba(35,41,70,0.04);
   text-align: center;
+}
+
+/* Forms */
+.restaurant-form,
+.user-form{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  background: var(--card);
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(35,41,70,0.04);
+}
+
+@media (min-width: 860px){
+  .restaurant-form, .user-form{
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+  .restaurant-form textarea, .restaurant-form input[type='email'],
+  .restaurant-form input[type='number']{
+    grid-column: span 2;
+  }
+}
+
+/* Make email in user form span full width and align User Type in the right column */
+.user-form input[type="email"]{
+  grid-column: 1 / span 2;
+}
+.user-form label[for="user_type_select"],
+.user-form select#user_type_select{
+  grid-column: 2 / 3;
+  justify-self: start;
+  width: 100%;
+}
+
+.restaurant-form input,
+.restaurant-form textarea,
+.restaurant-form select,
+.user-form input,
+.user-form select{
+  padding: 12px 14px;
+  border: 1px solid rgba(37,51,78,0.08);
+  border-radius: 10px;
+  font-size: 0.98rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,251,255,0.9));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  transition: box-shadow 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+.restaurant-form textarea{
+  min-height: 100px;
+  resize: vertical;
+  grid-column: span 2;
+}
+
+.restaurant-form input:focus,
+.restaurant-form select:focus,
+.user-form input:focus,
+.user-form select:focus{
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 6px 18px rgba(91,141,239,0.12);
+  transform: translateY(-1px);
+}
+
+.user-form label{
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.btn-primary,
+.restaurant-form button,
+.user-form button{
+  padding: 10px 16px;
+  background: linear-gradient(90deg,var(--accent), #3bb6a9);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+.btn-primary:hover,
+.restaurant-form button:hover,
+.user-form button:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(59,182,169,0.12);
+}
+
+.success-message{
+  color: #0f5132;
+  background: #e6f4ea;
+  border: 1px solid rgba(15,81,50,0.08);
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+.error-message{
+  color: #6b0f0f;
+  background: #ffecec;
+  border: 1px solid rgba(107,15,15,0.06);
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+/* Table for restaurant users */
+table{
+  border-collapse: collapse;
+  width: 100%;
+}
+thead tr{
+  background: linear-gradient(90deg, rgba(91,141,239,0.06), rgba(107,183,201,0.04));
+}
+th, td{
+  padding: 10px 12px;
+  text-align: left;
+}
+tbody tr:nth-child(even){
+  background: rgba(18,24,37,0.02);
+}
+
+.loading-overlay{
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(11,22,40,0.32);
+  z-index: 9999;
+  color: #fff;
+  gap: 12px;
+}
+.loading-spinner{
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.18);
+  border-top-color: #fff;
+  animation: spin 900ms linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Small screens */
+@media (max-width: 600px){
+  .superadmin-main{padding:20px}
+  .dashboard-cards{gap:12px}
 }

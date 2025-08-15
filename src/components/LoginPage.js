@@ -34,6 +34,7 @@ const LoginPage = () => {
         ) {
           setError("");
           Cookies.set("email", username, { expires: 1 });
+          Cookies.set("user_id", response.user_id, { expires: 1 });
           if (response.user_type === "SuperAdmin") {
             navigate("/superadmin");
           } else if (response.user_type === "Restaurant") {
