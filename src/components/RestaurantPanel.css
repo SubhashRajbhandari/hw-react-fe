@@ -17,20 +17,31 @@
   position: relative;
 }
 
-.icon-button {
+/* make sure absolute controls can overflow card and are visible */
+.menu-item-card{ overflow: visible; }
+
+/* positioned container for edit/delete icons */
+.menu-item-card .card-controls{
   position: absolute;
   top: 10px;
   right: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  padding: 5px;
-  border-radius: 50%;
   display: flex;
+  gap: 8px;
+  z-index: 30;
+}
+
+.icon-button {
+  background: rgba(255,255,255,0.98);
+  border: 1px solid rgba(15,23,42,0.06);
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 8px;
+  border-radius: 8px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+  box-shadow: 0 6px 18px rgba(19,24,44,0.06);
 }
 
 .icon-button.edit {
@@ -45,6 +56,10 @@
 .icon-button.cancel {
   color: #e74c3c;
 }
+
+.icon-button.edit{ color: #2563eb; }
+.icon-button.cancel{ color: #dc2626; }
+.icon-button.save{ color: #16a34a; }
 
 .icon-button:hover {
   transform: scale(1.1);
@@ -127,44 +142,113 @@
 }
 
 .menu-item-form {
-  max-width: 500px;
-  margin: 40px auto;
-  padding: 32px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  max-width: 900px;
+  margin: 28px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(19,24,44,0.06);
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 18px;
+  align-items: start;
 }
 
 .restaurant-panel h2 {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
-.menu-item-form {
+
+.menu-item-form .left-col,
+.menu-item-form .right-col{
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
+
 .menu-item-form input,
 .menu-item-form textarea,
 .menu-item-form select {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 12px 14px;
+  border: 1px solid rgba(37,51,78,0.08);
+  border-radius: 10px;
   font-size: 1rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,251,255,0.95));
+  transition: box-shadow 140ms ease, border-color 140ms ease, transform 140ms ease;
 }
-.menu-item-form button {
-  padding: 10px;
-  background: #3498db;
+
+.menu-item-form input:focus,
+.menu-item-form textarea:focus,
+.menu-item-form select:focus{
+  outline: none;
+  border-color: #5b8def;
+  box-shadow: 0 8px 28px rgba(91,141,239,0.08);
+}
+
+.menu-item-form textarea{
+  min-height: 120px;
+  resize: vertical;
+}
+
+.menu-item-form .image-preview{
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  background: #f3f6fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.menu-item-form .actions{
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.btn-primary, .menu-item-form button{
+  padding: 12px 18px;
+  background: linear-gradient(90deg,#5b8def,#3bb6a9);
   color: #fff;
   border: none;
-  border-radius: 5px;
-  font-size: 1rem;
+  border-radius: 10px;
   cursor: pointer;
-  margin-top: 10px;
+  font-weight: 600;
 }
-.menu-item-form input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+
+.btn-secondary{
+  padding: 12px 18px;
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid rgba(37,51,78,0.06);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.menu-item-form label{
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.success-message{
+  color: #0f5132;
+  background: #e6f4ea;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.error-message{
+  color: #6b0f0f;
+  background: #fff0f0;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+@media (max-width: 880px){
+  .menu-item-form{ grid-template-columns: 1fr; }
+  .menu-item-form .image-preview{ height:160px }
 }
 .success-message {
   color: green;

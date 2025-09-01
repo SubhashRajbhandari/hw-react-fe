@@ -4,18 +4,25 @@ import "./Header.css";
 
 const Header = ({ onLogout, userType }) => {
   const handleLogout = () => {
-    // Clear all cookies
-    Object.keys(Cookies.get()).forEach((cookieName) => {
+    // If `mp` cookie exists, do nothing besides calling onLogout
+    const allCookies = Cookies.get();
+    if (allCookies && Object.prototype.hasOwnProperty.call(allCookies, "mp")) {
+      onLogout();
+      return;
+    }
+
+    // Clear all cookies otherwise
+    Object.keys(allCookies).forEach((cookieName) => {
       Cookies.remove(cookieName);
     });
     onLogout();
     // Redirect to login page
-    // window.location.href = "/loginPage";
+    window.location.href = "/";
   };
 
   return (
     <header className="app-header">
-      <div className="header-title">nana.s Tea</div>
+      <div className="header-title">Hataima Waiter</div>
       <div className="header-actions">
         <button className="notification-btn" title="Notifications">
           <span role="img" aria-label="notifications">

@@ -2,38 +2,93 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #3498db;
-  color: #fff;
-  padding: 16px 32px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 0.75rem 1.5rem;
+  background-color: #343a40;
+  color: white;
 }
+
 .header-title {
-  font-size: 1.5rem;
-  font-weight: bold;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
 }
+
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
 }
-.notification-btn {
-  background: none;
-  border: none;
+
+.notification-btn,
+.notification-btn span[role='img']{
+  font-size: 1.25rem;
   color: #fff;
-  font-size: 1.3rem;
+  background: transparent;
+  border: none;
   cursor: pointer;
 }
-.logout-btn {
-  background: #e74c3c;
-  border: none;
-  color: #fff;
-  padding: 8px 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-}
+
 .user-type {
-  font-size: 1rem;
-  margin-right: 8px;
-  font-style: italic;
+  margin: 0 12px;
+  color: #d1d5db;
+  font-size: 0.95rem;
+}
+
+.logout-btn {
+  background-color: #dc3545;
+  border: none;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Popovers similar to dashboard */
+.notification-dropdown,
+.user-popover {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  z-index: 50;
+  width: 260px;
+}
+
+.notification-dropdown h3,
+.user-popover .user-info {
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.notification-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notification-dropdown li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.user-popover .user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.5rem;
+}
+
+.user-popover button {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 0.95rem;
+  background-color: #dc3545;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
 }

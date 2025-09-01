@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Header from './Header';
 import { useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaBell, FaConciergeBell, FaUtensils, FaChevronRight } from 'react-icons/fa';
 import './DashboardPage.css';
@@ -63,6 +64,7 @@ const DashboardPage = () => {
 
     return (
         <div className="full-page-container">
+            <Header onLogout={handleLogout} userType="User" />
             <div className="dashboard-header">
                 <h1>Restaurant Portal</h1>
                 <div className="header-icons">

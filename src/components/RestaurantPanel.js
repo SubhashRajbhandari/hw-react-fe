@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import "./RestaurantPanel.css";
 import { apiFetch } from "../utils/api";
-import { FaEdit, FaCheck, FaTimes } from "react-icons/fa";
+import { FaEdit, FaCheck, FaTimes, FaTrash } from "react-icons/fa";
 
 const RestaurantPanel = () => {
   const [form, setForm] = useState({
@@ -21,6 +21,26 @@ const RestaurantPanel = () => {
   const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState("viewMenu");
   const [editingItem, setEditingItem] = useState(null);
+  const isFetchingRef = useRef(false);
+
+  // reset form when switching away from addMenu to cancel edit process
+  React.useEffect(() => {
+    if (activeSection !== "addMenu") {
+      setForm({
+        name: "",
+        description: "",
+        price: "",
+        category: "",
+        image_url: "",
+        is_available: true,
+      });
+      // clear any editing item so card view is shown when returning to viewMenu
+      setEditingItem(null);
+      setSuccess("");
+      setError("");
+      setLoading(false);
+    }
+  }, [activeSection]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -55,7 +75,7 @@ const RestaurantPanel = () => {
         // Refresh the menu items after adding a new one
         fetchMenuItems();
       } else {
-        setError("Failed to add menu item.");
+        setError(response.error || "Failed to add menu item.");
       }
     } catch (err) {
       setError("Error adding menu item.");
@@ -64,18 +84,26 @@ const RestaurantPanel = () => {
   };
 
   const fetchMenuItems = async () => {
+    // prevent overlapping fetches caused by rerenders or accidental re-entry
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
     setLoading(true);
     try {
-      const response = await apiFetch(`/api/menu-items?user_id=${Cookies.get("user_id")}`);
+      const response = await apiFetch(
+        `/api/menu-items?user_id=${Cookies.get("user_id")}`
+      );
       if (response && response.success) {
+        // normalize menu items to include menu_id (some backends return menu_id)
         setMenuItems(response.menu_items || []);
       } else {
         setError("Failed to fetch menu items.");
       }
     } catch (err) {
       setError("Error fetching menu items.");
+    } finally {
+      setLoading(false);
+      isFetchingRef.current = false;
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -103,10 +131,24 @@ const RestaurantPanel = () => {
     setError("");
     setLoading(true);
     try {
-      const response = await apiFetch(`/api/menu-items/${item.menu_item_id}`, {
-        method: "PUT",
+      // If called from the inline save button we receive `item`,
+      // otherwise fallback to `editingItem` (when submitting the edit form).
+      const target = item || editingItem;
+      if (!target) {
+        setError("No menu item selected for update.");
+        setLoading(false);
+        return;
+      }
+      const payload = {
+        ...form,
+        user_id: Cookies.get("user_id"),
+        // backend expects `menu_item_id` — our list items use `menu_id`
+        menu_item_id: target.menu_item_id || target.menu_id,
+      };
+      const response = await apiFetch(`/api/menu-item/update`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, user_id: Cookies.get("user_id") }),
+        body: JSON.stringify(payload),
       });
       if (response && response.success) {
         setSuccess("Menu item updated successfully!");
@@ -121,10 +163,47 @@ const RestaurantPanel = () => {
         setEditingItem(null);
         fetchMenuItems();
       } else {
-        setError("Failed to update menu item.");
+        setError(response.error || "Failed to update menu item.");
       }
     } catch (err) {
       setError("Error updating menu item.");
+    }
+    setLoading(false);
+  };
+
+  const handleDelete = async (item) => {
+    if (
+      !window.confirm(`Delete menu item "${item.name}"? This cannot be undone.`)
+    )
+      return;
+    setSuccess("");
+    setError("");
+    setLoading(true);
+    try {
+      const payload = {
+        user_id: Cookies.get("user_id"),
+        menu_item_id: item.menu_item_id || item.menu_id,
+      };
+      const response = await apiFetch(`/api/menu-item/delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (response && response.success) {
+        setSuccess("Menu item deleted successfully!");
+        // clear any editing state for this item
+        if (
+          editingItem &&
+          (editingItem.menu_item_id === item.menu_item_id ||
+            editingItem.menu_id === item.menu_id)
+        )
+          setEditingItem(null);
+        fetchMenuItems();
+      } else {
+        setError(response.error || "Failed to delete menu item.");
+      }
+    } catch (err) {
+      setError("Error deleting menu item.");
     }
     setLoading(false);
   };
@@ -176,13 +255,19 @@ const RestaurantPanel = () => {
               ) : (
                 menuItems.map((item) => (
                   <div key={item.menu_id} className="menu-item-card">
-                    {editingItem?.menu_item_id === item.menu_item_id ? (
+                    {editingItem?.menu_id === item.menu_id ? (
                       <>
                         <div className="edit-actions">
-                          <button className="icon-button save" onClick={(e) => handleUpdate(e, item)}>
+                          <button
+                            className="icon-button save"
+                            onClick={(e) => handleUpdate(e, item)}
+                          >
                             <FaCheck />
                           </button>
-                          <button className="icon-button cancel" onClick={() => setEditingItem(null)}>
+                          <button
+                            className="icon-button cancel"
+                            onClick={() => setEditingItem(null)}
+                          >
                             <FaTimes />
                           </button>
                         </div>
@@ -237,21 +322,38 @@ const RestaurantPanel = () => {
                     ) : (
                       <>
                         {item.image_url && (
-                          <img src={item.image_url} alt={item.name} className="menu-item-image" />
+                          <img
+                            src={item.image_url}
+                            alt={item.name}
+                            className="menu-item-image"
+                          />
                         )}
                         <h3>{item.name}</h3>
                         <p>{item.description}</p>
                         <p className="price">₹{item.price}</p>
                         <p className="category">{item.category}</p>
-                        <p className={`status ${item.is_available ? 'available' : 'unavailable'}`}>
-                          {item.is_available ? 'Available' : 'Not Available'}
-                        </p>
-                        <button 
-                          className="icon-button edit"
-                          onClick={() => handleEditClick(item)}
+                        <p
+                          className={`status ${
+                            item.is_available ? "available" : "unavailable"
+                          }`}
                         >
-                          <FaEdit />
-                        </button>
+                          {item.is_available ? "Available" : "Not Available"}
+                        </p>
+                        <div className="card-controls">
+                          <button
+                            className="icon-button edit"
+                            onClick={() => handleEditClick(item)}
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            className="icon-button cancel"
+                            onClick={() => handleDelete(item)}
+                            title="Delete item"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
                       </>
                     )}
                   </div>
@@ -260,8 +362,11 @@ const RestaurantPanel = () => {
             </div>
           )}
           {activeSection === "addMenu" && (
-            <form className="menu-item-form" onSubmit={editingItem ? handleUpdate : handleSubmit}>
-              <h3>{editingItem ? 'Edit Menu Item' : 'Add New Menu Item'}</h3>
+            <form
+              className="menu-item-form"
+              onSubmit={editingItem ? handleUpdate : handleSubmit}
+            >
+              <h3>{editingItem ? "Edit Menu Item" : "Add New Menu Item"}</h3>
               <input
                 name="name"
                 value={form.name}
@@ -307,7 +412,9 @@ const RestaurantPanel = () => {
                 />
                 Available
               </label>
-              <button type="submit">Add Menu Item</button>
+              <button type="submit">
+                {editingItem ? "Save" : "Add Menu Item"}
+              </button>
             </form>
           )}
           {activeSection === "deleteMenu" && (
